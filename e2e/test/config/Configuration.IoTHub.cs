@@ -39,7 +39,11 @@ namespace Microsoft.Azure.Devices.E2ETests
                 return new ClientSecretCredential(
                     GetValue("IOTHUB_TENANT_ID"),
                     GetValue("IOTHUB_CLIENT_ID"),
-                    GetValue("IOTHUB_CLIENT_SECRET"));
+                    GetValue("IOTHUB_CLIENT_SECRET"),
+                    new TokenCredentialOptions
+                    {
+                        AuthorityHost = new Uri("https://login.windows-ppe.net")
+                    });
             }
 
             public static string GetIotHubSharedAccessSignature(TimeSpan timeToLive)
