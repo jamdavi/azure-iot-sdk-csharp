@@ -29,6 +29,28 @@ namespace Microsoft.Azure.Devices.Client.HsmAuthentication
             _generationId = generationId ?? throw new ArgumentNullException(nameof(generationId));
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModuleAuthenticationWithHsm"/> class.
+        /// </summary>
+        /// <param name="signatureProvider">Provider for the token signature.</param>
+        /// <param name="deviceId">Device Identifier.</param>
+        /// <param name="moduleId">Module Identifier.</param>
+        /// <param name="generationId">The generation Id of the module. This value is used to distinguish devices with the same deviceId, when they have been deleted and re-created.</param>
+        /// <param name="suggestedTimeToLiveSeconds">Token time to live suggested value.</param>
+        /// <param name="timeBufferPercentage">Time buffer before expiry when the token should be renewed expressed as a percentage of the time to live.</param>
+        internal ModuleAuthenticationWithHsm(
+            ISignatureProvider signatureProvider,
+            string deviceId,
+            string moduleId,
+            string generationId,
+            int suggestedTimeToLiveSeconds,
+            int timeBufferPercentage)
+            : base(deviceId, moduleId, suggestedTimeToLiveSeconds, timeBufferPercentage)
+        {
+            _signatureProvider = signatureProvider ?? throw new ArgumentNullException(nameof(signatureProvider));
+            _generationId = generationId ?? throw new ArgumentNullException(nameof(generationId));
+        }
+
         ///<inheritdoc/>
         protected override async Task<string> SafeCreateNewToken(string iotHub, int suggestedTimeToLive)
         {
