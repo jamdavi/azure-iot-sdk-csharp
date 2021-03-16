@@ -366,7 +366,7 @@ namespace Microsoft.Azure.Devices.Client
                 throw new ArgumentOutOfRangeException(nameof(connectionString), "Must specify at least one TransportSettings instance");
             }
 
-            var builder = IotHubConnectionStringBuilder.CreateWithIAuthenticationOverride(
+            IotHubConnectionStringBuilder builder = IotHubConnectionStringBuilder.CreateWithIAuthenticationOverride(
                 connectionString,
                 authenticationMethod);
 

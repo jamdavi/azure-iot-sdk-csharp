@@ -27,8 +27,6 @@ namespace Microsoft.Azure.Devices.Client.Edge
         private const string ModuleGenerationIdVariableName = "IOTEDGE_MODULEGENERATIONID";
         private const string AuthSchemeVariableName = "IOTEDGE_AUTHSCHEME";
         private const string SasTokenAuthScheme = "SasToken";
-        private const string SasTokenTimeToLiveVariableName = "IOTEDGE_SASTOKEN_TIMETOLIVE";
-        private const string SasTokenRenewalBufferVariavleName = "IOTEDGE_SASTOKEN_RENEWALBUFFER";
         private const string EdgehubConnectionstringVariableName = "EdgeHubConnectionString";
         private const string IothubConnectionstringVariableName = "IotHubConnectionString";
         private const string EdgeCaCertificateFileVariableName = "EdgeModuleCACertificateFile";
@@ -88,8 +86,6 @@ namespace Microsoft.Azure.Devices.Client.Edge
                 string authScheme = GetValueFromEnvironment(envVariables, AuthSchemeVariableName) ?? throw new InvalidOperationException($"Environment variable {AuthSchemeVariableName} is required.");
                 string generationId = GetValueFromEnvironment(envVariables, ModuleGenerationIdVariableName) ?? throw new InvalidOperationException($"Environment variable {ModuleGenerationIdVariableName} is required.");
                 string gateway = GetValueFromEnvironment(envVariables, GatewayHostnameVariableName);
-                bool isSasTokenTtlSupplied = int.TryParse(GetValueFromEnvironment(envVariables, SasTokenTimeToLiveVariableName), out int sasTokenTtl);
-                bool isSasTokenBufferPercentageSupplied = int.TryParse(GetValueFromEnvironment(envVariables, SasTokenRenewalBufferVariavleName), out int sasTokenBufferPercentage);
 
                 if (!string.Equals(authScheme, SasTokenAuthScheme, StringComparison.OrdinalIgnoreCase))
                 {
@@ -98,9 +94,7 @@ namespace Microsoft.Azure.Devices.Client.Edge
 
                 ISignatureProvider signatureProvider = new HttpHsmSignatureProvider(edgedUri, DefaultApiVersion);
 
-                ModuleAuthenticationWithHsm authMethod = isSasTokenTtlSupplied && isSasTokenBufferPercentageSupplied
-                    ? new ModuleAuthenticationWithHsm(signatureProvider, deviceId, moduleId, generationId, sasTokenTtl, sasTokenBufferPercentage)
-                    : new ModuleAuthenticationWithHsm(signatureProvider, deviceId, moduleId, generationId);
+                var authMethod = new ModuleAuthenticationWithHsm(signatureProvider, deviceId, moduleId, generationId, (int)_options.SasTokenTimeToLive.TotalSeconds, _options.SasTokenRenewalBuffer);
 
                 Debug.WriteLine("EdgeModuleClientFactory setupTrustBundle from service");
 

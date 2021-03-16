@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using Microsoft.Azure.Devices.Shared;
 
 namespace Microsoft.Azure.Devices.Client
@@ -29,5 +30,17 @@ namespace Microsoft.Azure.Devices.Client
         /// The default behavior is that <see cref="Message.MessageId"/> is set only by the user.
         /// </summary>
         public SdkAssignsMessageId SdkAssignsMessageId { get; set; } = SdkAssignsMessageId.Never;
+
+        /// <summary>
+        /// The suggested time to live value for the generated SAS tokens. This is used only for SAS token authenticated clients.
+        /// The default value is 1 hour.
+        /// </summary>
+        public TimeSpan SasTokenTimeToLive { get; set; } = TimeSpan.FromHours(1);
+
+        /// <summary>
+        /// The time buffer before expiry when the token should be renewed, expressed as a percentage of the time to live.
+        /// The default behavior is that the token will be renewed when it has 15% or less of its lifespan left.
+        /// </summary>
+        public int SasTokenRenewalBuffer { get; set; } = 15;
     }
 }
